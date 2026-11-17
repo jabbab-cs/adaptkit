@@ -1,0 +1,15 @@
+﻿# Data, fonts and training outputs stay local (see python/adaptkit/paths.py)
+workspace/
+
+# Logo exploration work (kept outside the kit)
+brand/concepts/
+
+# Python and Node clutter
+__pycache__/
+*.pyc
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,15 @@
+{
+  "name": "adaptkit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Interfaces that adapt to the person using them: bigger targets, bigger text, higher contrast, more spacing, chosen by a reinforcement-learning policy.",
+  "type": "module",
+  "main": "js/adaptkit.js",
+  "files": ["js/adaptkit.js", "js/adaptkit.css", "policies/", "spec/"],
+  "scripts": {
+    "test": "node --test js/test/",
+    "start": "node serve.mjs"
+  },
+  "license": "MIT",
+  "keywords": ["accessibility", "adaptive-ui", "reinforcement-learning", "q-learning", "a11y", "fitts-law"]
+}

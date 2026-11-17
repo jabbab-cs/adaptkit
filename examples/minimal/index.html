@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="../../brand/icons/favicon.svg" type="image/svg+xml">
+  <title>AdaptKit · minimal example</title>
+  <!-- 1. Add the AdaptKit stylesheet (it styles the "what changed + Undo" notice). -->
+  <link rel="stylesheet" href="../../js/adaptkit.css">
+  <style>
+    /* 3. Make your own CSS follow the values AdaptKit sets on <html>. */
+    html { font-size: calc(16px * var(--ak-font-scale, 1)); }
+    body { margin: 0; font-family: system-ui, "Segoe UI", sans-serif; background: #f7f7f5; color: #1b1b1b; }
+    main { max-width: 640px; margin: 0 auto; padding: 1.5rem 1rem; }
+    .grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    [data-ak-layout="spacious"] .grid { gap: 1.25rem; }
+    button {
+      min-width: var(--ak-target-min, 32px);
+      min-height: var(--ak-target-min, 32px);
+      padding: 0 0.75rem;
+      border: 1px solid #b8b8b0; border-radius: 8px; background: #fff; color: inherit; font: inherit; cursor: pointer;
+    }
+    [data-ak-contrast="high"] body { background: #000; color: #fff; }
+    [data-ak-contrast="high"] button { background: #000; color: #fff; border: 2px solid #fff; }
+    #log { font: 0.8rem/1.4 ui-monospace, Consolas, monospace; white-space: pre-wrap; background: #fff; border-radius: 8px; padding: 0.75rem; }
+    [data-ak-contrast="high"] #log { background: #111; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>AdaptKit in 3 steps</h1>
+  <p>Press the numbers. Miss some on purpose (press just beside them). After a few presses AdaptKit may make the buttons bigger and show a notice with <strong>Undo</strong>.</p>
+
+  <!-- 2. Mark the things people press with data-adapt-target. -->
+  <div class="grid" data-adapt-task="demo.numbers">
+    <button data-adapt-target>1</button><button data-adapt-target>2</button><button data-adapt-target>3</button>
+    <button data-adapt-target>4</button><button data-adapt-target>5</button><button data-adapt-target>6</button>
+    <button data-adapt-target>7</button><button data-adapt-target>8</button><button data-adapt-target>9</button>
+  </div>
+
+  <h2>What AdaptKit recorded</h2>
+  <div id="log" data-adapt-ignore>Nothing yet.</div>
+</main>
+
+<script type="module">
+  // On your own site, load the file from your server or a CDN instead of this relative path.
+  import { AdaptKit } from '../../js/adaptkit.js';
+
+  await AdaptKit.init({
+    mode: 'adaptive',                       // 'static' records only, 'adaptive' also adapts
+    policy: '../../policies/demo.json',     // demo rules react quickly; use default.json for the trained AI
+    participant: 'visitor',
+    lang: 'en',                             // 'ar' for Arabic notices
+  });
+
+  const log = document.getElementById('log');
+  const lines = [];
+  AdaptKit.on('event', (e) => {
+    lines.push(`press ${e.trial}: ${e.hit ? 'hit' : 'missed first'} · ${Math.round(e.time_ms)} ms · target ${e.target_w}px`);
+    log.textContent = lines.slice(-8).join('\n');
+  });
+  AdaptKit.on('adapt', (r) => {
+    if (r.action !== 'none') { lines.push(`AdaptKit changed: ${r.action}`); log.textContent = lines.slice(-8).join('\n'); }
+  });
+</script>
+</body>
+</html>

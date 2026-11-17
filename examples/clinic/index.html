@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="../../brand/icons/favicon.svg" type="image/svg+xml">
+  <title>Al-Noor Family Clinic — study prototype</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../js/adaptkit.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/></svg>
+      </span>
+      <div>
+        <p class="brand-name" data-i18n="clinic">Al-Noor Family Clinic</p>
+        <p class="brand-sub" data-i18n="clinic_sub">Book an appointment</p>
+      </div>
+    </div>
+    <button type="button" id="langToggle" class="lang-toggle" data-adapt-ignore>عربي</button>
+  </header>
+
+  <main id="main">
+    <details id="taskCard" class="taskcard" data-adapt-ignore open hidden>
+      <summary><span data-i18n="task_title">Your task</span> <span id="taskCardName" class="taskcard-name"></span></summary>
+      <p class="taskcard-intro" data-i18n="task_intro">Book this appointment:</p>
+      <dl id="taskBody" class="kv"></dl>
+    </details>
+
+    <p id="demoNote" class="demo-note" data-i18n="no_session" hidden>Demo mode: nothing is being recorded.</p>
+
+    <section class="screen" data-adapt-task="clinic.pick_specialty" data-step="pick_specialty" aria-labelledby="h-spec">
+      <p class="stepno" data-stepno="1"></p>
+      <h1 id="h-spec" tabindex="-1" data-i18n="h_specialty">Choose a specialty</h1>
+      <div id="specGrid" class="card-grid"></div>
+      <p class="hint" role="status" data-hint></p>
+      <div class="nav">
+        <button type="button" class="btn btn-primary" data-adapt-target data-next="pick_specialty" data-i18n="next">Next</button>
+      </div>
+    </section>
+
+    <section class="screen" data-adapt-task="clinic.pick_doctor" data-step="pick_doctor" aria-labelledby="h-doc" hidden>
+      <p class="stepno" data-stepno="2"></p>
+      <h1 id="h-doc" tabindex="-1" data-i18n="h_doctor">Choose a doctor</h1>
+      <div id="docGrid" class="card-grid"></div>
+      <p class="hint" role="status" data-hint></p>
+      <div class="nav">
+        <button type="button" class="btn btn-secondary" data-adapt-target data-back data-i18n="back">Back</button>
+        <button type="button" class="btn btn-primary" data-adapt-target data-next="pick_doctor" data-i18n="next">Next</button>
+      </div>
+    </section>
+
+    <section class="screen" data-adapt-task="clinic.pick_date" data-step="pick_date" aria-labelledby="h-date" hidden>
+      <p class="stepno" data-stepno="3"></p>
+      <h1 id="h-date" tabindex="-1" data-i18n="h_date">Choose a date</h1>
+      <div id="calendar" class="cal"></div>
+      <p class="note" data-i18n="closed_note"></p>
+      <p class="hint" role="status" data-hint></p>
+      <div class="nav">
+        <button type="button" class="btn btn-secondary" data-adapt-target data-back data-i18n="back">Back</button>
+        <button type="button" class="btn btn-primary" data-adapt-target data-next="pick_date" data-i18n="next">Next</button>
+      </div>
+    </section>
+
+    <section class="screen" data-adapt-task="clinic.pick_slot" data-step="pick_slot" aria-labelledby="h-slot" hidden>
+      <p class="stepno" data-stepno="4"></p>
+      <h1 id="h-slot" tabindex="-1" data-i18n="h_slot">Choose a time</h1>
+      <p id="slotDate" class="subhead"></p>
+      <div id="slotGrid" class="slot-grid" role="group" aria-labelledby="h-slot"></div>
+      <p class="note" data-i18n="slot_note"></p>
+      <p class="hint" role="status" data-hint></p>
+      <div class="nav">
+        <button type="button" class="btn btn-secondary" data-adapt-target data-back data-i18n="back">Back</button>
+        <button type="button" class="btn btn-primary" data-adapt-target data-next="pick_slot" data-i18n="next">Next</button>
+      </div>
+    </section>
+
+    <section class="screen" data-adapt-task="clinic.fill_form" data-step="fill_form" aria-labelledby="h-form" hidden>
+      <p class="stepno" data-stepno="5"></p>
+      <h1 id="h-form" tabindex="-1" data-i18n="h_form">Your details</h1>
+      <!-- Values are only checked for being non-empty. They are never stored or logged. -->
+      <form id="bookForm" novalidate autocomplete="off">
+        <div class="field">
+          <label for="fName" data-adapt-ignore data-i18n="f_name">Full name</label>
+          <input id="fName" name="fName" type="text" data-adapt-target autocomplete="off" spellcheck="false" aria-describedby="fName-err" required>
+          <p id="fName-err" class="err" hidden></p>
+        </div>
+        <div class="field">
+          <label for="fPhone" data-adapt-ignore data-i18n="f_phone">Phone number</label>
+          <input id="fPhone" name="fPhone" type="tel" inputmode="tel" dir="ltr" data-adapt-target autocomplete="off" spellcheck="false" aria-describedby="fPhone-err" required>
+          <p id="fPhone-err" class="err" hidden></p>
+        </div>
+        <div class="field">
+          <label for="fReason" data-adapt-ignore data-i18n="f_reason">Reason for visit</label>
+          <input id="fReason" name="fReason" type="text" data-adapt-target autocomplete="off" spellcheck="false" aria-describedby="fReason-err" required>
+          <p id="fReason-err" class="err" hidden></p>
+        </div>
+      </form>
+      <div class="nav">
+        <button type="button" class="btn btn-secondary" data-adapt-target data-back data-i18n="back">Back</button>
+        <button type="button" class="btn btn-primary" data-adapt-target data-next="fill_form" data-i18n="next">Next</button>
+      </div>
+    </section>
+
+    <section class="screen" data-adapt-task="clinic.confirm" data-step="confirm" aria-labelledby="h-confirm" hidden>
+      <p class="stepno" data-stepno="6"></p>
+      <h1 id="h-confirm" tabindex="-1" data-i18n="h_confirm">Check and confirm</h1>
+      <dl id="summary" class="kv summary"></dl>
+      <div class="nav">
+        <button type="button" class="btn btn-secondary" data-adapt-target data-back data-i18n="back">Back</button>
+        <button type="button" class="btn btn-primary" data-adapt-target data-next="confirm" data-i18n="confirm">Confirm booking</button>
+      </div>
+    </section>
+
+    <section class="screen" data-step="done" aria-labelledby="h-done" hidden>
+      <h1 id="h-done" tabindex="-1" data-i18n="h_done">Appointment booked</h1>
+      <p data-i18n="done_text"></p>
+      <dl id="doneSummary" class="kv summary"></dl>
+      <p class="done-tell" data-i18n="done_tell"></p>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p data-i18n="fictional">Fictional clinic for a university study. No real bookings are made.</p>
+  </footer>
+
+  <!-- Researcher panel: shown with ?researcher=1. Never counted as a selection or a miss. -->
+  <aside id="rpanel" class="rpanel" data-adapt-ignore hidden lang="en" dir="ltr" aria-label="Researcher panel">
+    <div class="rp-head">
+      <strong>Researcher panel</strong>
+      <button type="button" id="rpCollapse" aria-expanded="true">Hide</button>
+    </div>
+    <div class="rp-body">
+      <label>Participant code <input id="rpPid" value="P01" maxlength="16" autocomplete="off" spellcheck="false"></label>
+      <label>Condition order
+        <select id="rpOrder">
+          <option value="static-first">Static first, then adaptive</option>
+          <option value="adaptive-first">Adaptive first, then static</option>
+        </select>
+      </label>
+      <label>Task cards
+        <select id="rpCard1">
+          <option value="A">Card A in session 1, card B in session 2</option>
+          <option value="B">Card B in session 1, card A in session 2</option>
+        </select>
+      </label>
+      <label>Language
+        <select id="rpLang">
+          <option value="en">English</option>
+          <option value="ar">Arabic (عربي)</option>
+        </select>
+      </label>
+      <p id="rpPlan" class="rp-plan"></p>
+      <div class="rp-btns">
+        <button type="button" id="rpStart1">Start session 1</button>
+        <button type="button" id="rpStart2">Start session 2</button>
+        <button type="button" id="rpExport">Export CSV</button>
+        <button type="button" id="rpReset">Reset</button>
+        <button type="button" id="rpSaved">Download all saved logs</button>
+      </div>
+      <p id="rpMsg" class="rp-msg" role="status"></p>
+      <dl class="rp-stats">
+        <dt>Session</dt><dd id="rpSession">none</dd>
+        <dt>Mode</dt><dd id="rpMode">-</dd>
+        <dt>Card</dt><dd id="rpCard">-</dd>
+        <dt>Step</dt><dd id="rpStep">-</dd>
+        <dt>Selections</dt><dd id="rpSel">0</dd>
+        <dt>Misses</dt><dd id="rpMiss">0</dd>
+        <dt>UI levels</dt><dd id="rpUI">-</dd>
+        <dt>Last change</dt><dd id="rpAdapt">-</dd>
+        <dt>Booking</dt><dd id="rpBooking">-</dd>
+        <dt>Exported</dt><dd id="rpExported">-</dd>
+        <dt>Policy</dt><dd id="rpPolicy">checking…</dd>
+      </dl>
+    </div>
+  </aside>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,472 @@
+/* Al-Noor Family Clinic: study prototype styles.
+   All sizes follow the AdaptKit variables set on <html> by the runtime:
+     --ak-target-min  (32 / 44 / 64 px)  minimum size of every task target
+     --ak-font-scale  (1 / 1.5 / 2)      all text is in rem, and 1rem = 16px x scale
+     [data-ak-contrast="high"]           high-contrast theme (text >= 7:1)
+     [data-ak-layout="spacious"]         larger gaps and padding, fewer columns
+   The researcher panel uses px on purpose so it never changes size. */
+
+:root {
+  --bg: #f3f6f7;
+  --surface: #ffffff;
+  --text: #17202a;
+  --muted: #47535e;
+  --primary: #0a5c63;
+  --primary-hover: #074a50;
+  --on-primary: #ffffff;
+  --accent-bg: #e3f1f2;
+  --border: #c5cfd5;
+  --border-strong: #7d8a93;
+  --unavail-bg: #eceff1;
+  --unavail-text: #7b858d;
+  --error: #a3161a;
+  --focus: #1a5fd0;
+  --task-bg: #fff6d9;
+  --task-border: #c99a1e;
+
+  --gap: 0.75rem;
+  --tight-gap: 0.375rem;
+  /* Padding grows with the font scale but is capped on narrow screens,
+     so large text keeps room for words on a 360px phone. */
+  --pad: max(10px, min(1rem, 4vw));
+  --radius: 10px;
+  --card-min: 13rem;
+  --slot-min: 6.5rem;
+  color-scheme: light;
+}
+
+html[data-ak-layout="spacious"] {
+  --gap: 1.5rem;
+  --tight-gap: 0.75rem;
+  --pad: max(14px, min(1.75rem, 5vw));
+  --card-min: 22rem;
+  --slot-min: 9rem;
+}
+
+html[data-ak-contrast="high"] {
+  --bg: #000000;
+  --surface: #000000;
+  --text: #ffffff;
+  --muted: #ffffff;
+  --primary: #ffe14d;
+  --primary-hover: #fff59d;
+  --on-primary: #000000;
+  --accent-bg: #000000;
+  --border: #ffffff;
+  --border-strong: #ffffff;
+  --unavail-bg: #000000;
+  --unavail-text: #cfcfcf;
+  --error: #ff9e94;
+  --focus: #5fd7ff;
+  --task-bg: #000000;
+  --task-border: #ffe14d;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  font-size: calc(16px * var(--ak-font-scale, 1));
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, "Segoe UI", Tahoma, "Noto Sans Arabic", Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+}
+
+p { margin: 0 0 var(--tight-gap); }
+button, input, select { font: inherit; color: inherit; }
+svg { max-width: 100%; }
+
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+h1:focus { outline: none; }
+
+/* ---------- header ---------- */
+
+.topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+  padding: 0.625rem var(--pad);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand { display: flex; align-items: center; gap: 0.625rem; min-width: 0; }
+.brand p { margin: 0; }
+.logo {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--on-primary);
+}
+.logo svg { width: 1.25rem; height: 1.25rem; }
+.brand-name { font-weight: 700; font-size: 1.125rem; line-height: 1.25; }
+.brand-sub { color: var(--muted); font-size: 0.8125rem; }
+
+.lang-toggle {
+  min-width: 44px;
+  min-height: 36px;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ---------- layout ---------- */
+
+main {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: var(--pad);
+}
+
+.screen {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--pad);
+}
+.screen[hidden] { display: none; }
+
+h1 { font-size: 1.375rem; line-height: 1.3; margin: 0 0 var(--gap); }
+.stepno { color: var(--muted); font-size: 0.8125rem; margin-bottom: 0.125rem; }
+.subhead { font-weight: 600; }
+.note { color: var(--muted); font-size: 0.875rem; margin-top: var(--gap); }
+.hint { color: var(--error); font-weight: 600; font-size: 0.875rem; min-height: 0; margin: var(--tight-gap) 0 0; }
+.hint:empty { display: none; }
+
+.demo-note {
+  border: 1px dashed var(--border-strong);
+  border-radius: 6px;
+  padding: 0.375rem 0.75rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+/* ---------- task card (ignored by AdaptKit) ---------- */
+
+.taskcard {
+  background: var(--task-bg);
+  border: 2px solid var(--task-border);
+  border-radius: var(--radius);
+  padding: 0.5rem var(--pad);
+  margin-bottom: var(--gap);
+}
+.taskcard summary {
+  cursor: pointer;
+  font-weight: 700;
+  padding: 0.25rem 0;
+}
+.taskcard-name { font-weight: 400; }
+.taskcard-intro { margin-top: 0.25rem; }
+
+.kv { margin: 0; }
+.kv > div { display: flex; flex-wrap: wrap; column-gap: 1rem; margin-bottom: 0.125rem; }
+.kv dt { color: var(--muted); flex: 0 0 7rem; max-width: 100%; }
+.kv dd { margin: 0; font-weight: 600; flex: 1 1 10rem; min-width: 0; }
+.kv dd[dir="ltr"] { text-align: start; unicode-bidi: isolate; }
+html[dir="rtl"] .kv dd[dir="ltr"] { text-align: right; }
+
+/* ---------- every task target ---------- */
+
+[data-adapt-target] {
+  min-width: var(--ak-target-min);
+  min-height: var(--ak-target-min);
+}
+
+/* ---------- cards (specialty, doctor) ---------- */
+
+.card-grid {
+  display: grid;
+  gap: var(--gap);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--card-min)), 1fr));
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  min-width: var(--ak-target-min);
+  min-height: var(--ak-target-min);
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  text-align: start;
+  cursor: pointer;
+  container-type: inline-size;
+}
+.card:hover { border-color: var(--primary); }
+/* Narrow card (large text on a phone): drop the decorative icon so the name has room. */
+@container (max-width: 10em) {
+  .card .card-icon { display: none; }
+}
+.card[aria-pressed="true"] {
+  border-color: var(--primary);
+  background: var(--accent-bg);
+  box-shadow: inset 0 0 0 2px var(--primary);
+}
+
+.card-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--accent-bg);
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+.card-icon svg { width: 1.375rem; height: 1.375rem; }
+html[data-ak-contrast="high"] .card-icon { border: 1px solid var(--primary); }
+
+.card-text { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.card-title { font-weight: 600; font-size: 1rem; line-height: 1.3; }
+.card-desc { color: var(--muted); font-size: 0.8125rem; line-height: 1.35; }
+
+.card-check {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid var(--border-strong);
+  border-radius: 50%;
+}
+.card[aria-pressed="true"] .card-check {
+  border-color: var(--primary);
+  background: radial-gradient(circle, var(--primary) 0 45%, transparent 50%);
+}
+
+/* ---------- calendar ---------- */
+
+.cal { max-width: 100%; }
+.cal-title { font-weight: 700; margin-bottom: var(--tight-gap); }
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, max-content);
+  gap: var(--tight-gap);
+  width: max-content;
+  justify-items: center;
+  align-items: center;
+}
+
+.cal-head {
+  min-width: var(--ak-target-min);
+  text-align: center;
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Day cells are exactly --ak-target-min square while the number fits (32px at the default level). */
+.day {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  min-width: var(--ak-target-min);
+  min-height: var(--ak-target-min);
+  padding: 0 0.125rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.875rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.day:hover:not(.is-unavailable) { border-color: var(--primary); }
+.day[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: var(--on-primary); font-weight: 700; }
+.day .dow { display: none; }
+
+.is-unavailable {
+  background: var(--unavail-bg) !important;
+  color: var(--unavail-text) !important;
+  border-style: dashed !important;
+  text-decoration: line-through;
+  cursor: not-allowed !important;
+}
+
+/* Wrapping mode: used when 7 columns would overflow (e.g. 64px targets on a phone). */
+.cal.is-wrap .cal-grid {
+  width: auto;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(var(--ak-target-min), 3.25rem)), 1fr));
+  justify-items: stretch;
+}
+.cal.is-wrap .cal-head,
+.cal.is-wrap .cal-blank { display: none; }
+.cal.is-wrap .day .dow { display: inline; font-weight: 400; }
+
+/* ---------- time slots ---------- */
+
+.slot-grid {
+  display: grid;
+  gap: var(--tight-gap);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, max(var(--ak-target-min), var(--slot-min))), 1fr));
+}
+
+.slot {
+  min-width: var(--ak-target-min);
+  min-height: var(--ak-target-min);
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.875rem;
+  line-height: 1.2;
+  cursor: pointer;
+}
+.slot:hover:not(.is-unavailable) { border-color: var(--primary); }
+.slot[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: var(--on-primary); font-weight: 700; }
+
+/* ---------- form ---------- */
+
+.field { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: var(--gap); }
+.field label { font-weight: 600; }
+.field input {
+  width: 100%;
+  max-width: 28rem;
+  min-width: var(--ak-target-min);
+  min-height: var(--ak-target-min);
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1rem;
+}
+html[dir="rtl"] .field input[dir="ltr"] { text-align: right; }
+.field input[aria-invalid="true"] { border: 2px solid var(--error); }
+.err { color: var(--error); font-size: 0.875rem; font-weight: 600; margin: 0; }
+
+/* ---------- buttons ---------- */
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap);
+  margin-top: calc(var(--gap) * 1.5);
+}
+.nav .btn-primary { margin-inline-start: auto; }
+
+.btn {
+  min-width: var(--ak-target-min);
+  min-height: var(--ak-target-min);
+  padding: 0.25rem 1rem;
+  border: 1px solid var(--primary);
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.3;
+  cursor: pointer;
+}
+.btn-primary { background: var(--primary); color: var(--on-primary); }
+.btn-primary:hover { background: var(--primary-hover); }
+.btn-secondary { background: var(--surface); color: var(--primary); }
+.btn[aria-disabled="true"] {
+  background: var(--unavail-bg);
+  color: var(--unavail-text);
+  border: 1px dashed var(--unavail-text);
+  cursor: not-allowed;
+}
+
+.summary { margin-bottom: var(--gap); }
+.done-tell { font-weight: 700; margin-top: var(--gap); }
+
+.foot {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 0 var(--pad) var(--pad);
+  color: var(--muted);
+  font-size: 0.8125rem;
+  text-align: center;
+}
+
+/* ---------- spacious layout: fewer columns ---------- */
+
+html[data-ak-layout="spacious"] .card { padding: min(1rem, 4vw) min(1.25rem, 4vw); }
+html[data-ak-layout="spacious"] .field input { padding: 0.5rem 0.75rem; }
+html[data-ak-layout="spacious"] .btn { padding: 0.5rem 1.5rem; }
+html[data-ak-layout="spacious"] .slot { padding: 0.5rem 0.75rem; }
+
+/* ---------- researcher panel (px units: independent of the adaptations) ---------- */
+
+.rpanel {
+  position: fixed;
+  right: 8px;
+  bottom: 8px;
+  z-index: 2147483001;
+  width: min(340px, calc(100vw - 16px));
+  max-height: calc(100vh - 16px);
+  overflow: auto;
+  background: #ffffff;
+  color: #111111;
+  border: 2px solid #333333;
+  border-radius: 8px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+  font: 13px/1.4 system-ui, "Segoe UI", Tahoma, sans-serif;
+  text-align: left;
+  overflow-wrap: normal;
+}
+.rpanel[hidden] { display: none; }
+/* Collapsed during a session: sit below the AdaptKit notice (z-index 2147483000) so Undo is never covered. */
+.rpanel.is-collapsed { width: auto; z-index: 2147482000; }
+.rpanel.is-collapsed .rp-body { display: none; }
+.rp-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 6px 8px; background: #333; color: #fff; }
+.rp-head strong { font-size: 13px; }
+.rpanel.is-collapsed .rp-head strong { display: none; }
+.rp-head button, .rp-btns button {
+  min-height: 30px;
+  padding: 2px 10px;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background: #fff;
+  color: #111;
+  font: 13px system-ui, sans-serif;
+  cursor: pointer;
+}
+.rp-body { padding: 8px; }
+.rp-body label { display: block; margin-bottom: 6px; font-weight: 600; }
+.rp-body input, .rp-body select {
+  display: block;
+  width: 100%;
+  margin-top: 2px;
+  min-height: 28px;
+  font: 13px system-ui, sans-serif;
+  color: #111;
+  background: #fff;
+  border: 1px solid #888;
+  border-radius: 4px;
+}
+.rp-plan { font-size: 12px; color: #333; margin: 4px 0 8px; }
+.rp-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.rp-msg { margin: 8px 0; font-size: 12px; }
+.rp-msg:empty { display: none; }
+.rp-msg[data-kind="error"] { color: #a00; font-weight: 700; }
+.rp-msg[data-kind="warn"] { color: #8a4b00; font-weight: 700; }
+.rp-stats { display: grid; grid-template-columns: max-content 1fr; gap: 2px 10px; margin: 0; font-size: 12px; }
+.rp-stats dt { color: #555; }
+.rp-stats dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }

@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "adaptkit/policy.schema.json",
+  "title": "AdaptKit policy file (v0.1)",
+  "description": "Everything the runtime needs to adapt a page: how to measure behaviour, how to turn it into a state, what to do in each state, and the safety rules. Produced by the Python trainer; read by any runtime.",
+  "type": "object",
+  "required": ["adaptkit_policy_version", "kind", "is_placeholder", "window_size", "decision_every", "reference_fitts", "bins", "need_model", "levels", "actions", "shield", "table", "default_action"],
+  "properties": {
+    "adaptkit_policy_version": { "const": "0.1" },
+    "kind":            { "enum": ["q-learning", "rule-based", "static", "test"] },
+    "is_placeholder":  { "type": "boolean", "description": "true = not trained on data yet (e.g. hand-written test values); must not be used in the study" },
+    "created":         { "type": "string" },
+    "trained_on":      { "type": "string", "description": "Plain description of the training data, e.g. 'simulated users calibrated on Findlater & Zhang (2020), train split'" },
+    "seed":            { "type": ["integer", "null"] },
+    "notes":           { "type": "string" },
+    "window_size":     { "type": "integer", "minimum": 3, "description": "How many recent selections the features look at" },
+    "decision_every":  { "type": "integer", "minimum": 1, "description": "A decision is made after every N-th selection" },
+    "reference_fitts": {
+      "type": "object",
+      "description": "Population Fitts' law model per device: predicted_ms = a_ms + b_ms_per_bit * ID",
+      "required": ["mouse", "touch"],
+      "additionalProperties": {
+        "type": "object", "required": ["a_ms", "b_ms_per_bit"],
+        "properties": { "a_ms": { "type": "number" }, "b_ms_per_bit": { "type": "number" } }
+      }
+    },
+    "speed_ratio_cap": { "type": "number", "exclusiveMinimum": 0, "description": "Speed ratios above this are treated as reading/deciding pauses and ignored (see features.md). Optional: no cap if absent." },
+    "bins": {
+      "type": "object",
+      "required": ["miss_rate", "speed_ratio", "variability", "need"],
+      "description": "Ascending thresholds. value < t[0] -> 0; t[0] <= value < t[1] -> 1; ... A missing value maps to the middle bin (see features.md).",
+      "properties": {
+        "miss_rate":   { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
+        "speed_ratio": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
+        "variability": { "type": "array", "items": { "type": "number" }, "minItems": 1, "maxItems": 1 },
+        "need":        { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 }
+      }
+    },
+    "need_model": {
+      "type": "object",
+      "description": "Logistic regression: need = sigmoid(intercept + sum(coef[f] * f)). Features: miss_rate, log_speed_ratio, variability, device_touch.",
+      "required": ["intercept", "coef"],
+      "properties": {
+        "intercept": { "type": "number" },
+        "coef": {
+          "type": "object",
+          "required": ["miss_rate", "log_speed_ratio", "variability", "device_touch"],
+          "additionalProperties": { "type": "number" }
+        }
+      }
+    },
+    "levels": {
+      "type": "object",
+      "required": ["target_px", "font_scale", "contrast", "layout"],
+      "properties": {
+        "target_px":  { "type": "array", "items": { "type": "number" }, "minItems": 1 },
+        "font_scale": { "type": "array", "items": { "type": "number" }, "minItems": 1 },
+        "contrast":   { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "layout":     { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": { "enum": ["none", "target_up", "target_down", "text_up", "text_down", "contrast_toggle", "layout_toggle"] }
+    },
+    "shield": {
+      "type": "object",
+      "required": ["min_events_before_first_change", "block_undone_actions"],
+      "properties": {
+        "min_events_before_first_change": { "type": "integer", "minimum": 0 },
+        "block_undone_actions": { "type": "boolean", "description": "After the user undoes an action, that action is blocked for the rest of the session" }
+      }
+    },
+    "table": {
+      "type": "object",
+      "description": "State key -> action. State keys are built as described in features.md, e.g. 'm1-s2-v0-n2-t0-x0-c0-l0-d1'.",
+      "additionalProperties": { "type": "string" }
+    },
+    "default_action": { "type": "string", "description": "Used when a state is not in the table" },
+    "q_values": {
+      "type": "object",
+      "description": "Optional, for transparency: state key -> Q-value per action (same order as 'actions')",
+      "additionalProperties": { "type": "array", "items": { "type": "number" } }
+    }
+  }
+}

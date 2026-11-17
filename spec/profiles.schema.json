@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "adaptkit/profiles.schema.json",
+  "title": "AdaptKit participant profile (v0.1)",
+  "description": "One row per participant per source. Joined to events on (source, participant). Self-reported; anonymous; no names or contact details.",
+  "type": "object",
+  "required": ["source", "is_synthetic", "participant"],
+  "properties": {
+    "source":            { "enum": ["findlater2020", "taptest", "usability", "simulated", "test"] },
+    "is_synthetic":      { "enum": [0, 1] },
+    "participant":       { "type": "string" },
+    "age":               { "type": ["integer", "null"] },
+    "age_group":         { "enum": ["18-24", "25-34", "35-49", "50-64", "65+", null] },
+    "motor_impairment":  { "enum": [0, 1, null], "description": "Self-reported motor impairment (class label of the need classifier)" },
+    "low_vision":        { "enum": [0, 1, null] },
+    "colour_vision":     { "enum": [0, 1, null] },
+    "other_vision":      { "enum": [0, 1, null] },
+    "concentration":     { "enum": [0, 1, null], "description": "Self-reported difficulty concentrating (tap test / survey only)" },
+    "motor_detail":      { "type": ["string", "null"], "description": "Semicolon-separated motor difficulties, e.g. 'tremor;low_strength'" },
+    "device_difficulty_mouse": { "type": ["integer", "null"], "minimum": 1, "maximum": 7 },
+    "device_difficulty_touch": { "type": ["integer", "null"], "minimum": 1, "maximum": 7 },
+    "split":             { "enum": ["train", "val", "test", null], "description": "Participant-level data split (decided once, by participant)" }
+  },
+  "additionalProperties": false
+}
