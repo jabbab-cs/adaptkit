@@ -1,9 +1,10 @@
 # Python 3.13 packages for this project (tested 3 Nov 2026).
 # Install:  python -m pip install -r requirements.txt
-# pandas is pinned to 2.3.3: newer pandas builds are blocked by Windows Smart App Control on this laptop.
+# pandas 2.3.3 and scikit-learn 1.7.2 are pinned because newer builds were blocked by Windows Smart App Control
+# on the development laptop. The logistic-regression need model is identical under 1.7.2 and 1.9.1.
 pandas==2.3.3
 numpy==2.5.4
 scipy==1.18.1
-scikit-learn==1.9.1
+scikit-learn==1.7.2
 matplotlib==3.11.2
 openpyxl==3.1.5
