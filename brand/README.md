@@ -1,6 +1,9 @@
 # AdaptKit brand
 
-<img src="adaptkit-logo.svg" alt="AdaptKit" width="360">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="adaptkit-logo-dark.svg">
+  <img src="adaptkit-logo.svg" alt="AdaptKit" width="360">
+</picture>
 
 **The idea:** a kit grid where one piece has grown to fit the person using it. That is what AdaptKit does to an interface.
 

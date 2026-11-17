@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="brand/adaptkit-logo.svg" alt="AdaptKit" width="420">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="brand/adaptkit-logo-dark.svg">
+    <img src="brand/adaptkit-logo.svg" alt="AdaptKit" width="420">
+  </picture>
 </p>
 
 <p align="center"><strong>Interfaces that adapt to the person using them.</strong><br>
